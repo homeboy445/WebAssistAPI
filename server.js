@@ -6,7 +6,7 @@ const cors = require('cors');
 const socketIo = require('socket.io');
 
 const app = express();
-const port = 3000; // Port to listen on!
+const port = process.env.PORT || 3000; // Port to listen on!
 
 app.use(express.json());
 
