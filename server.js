@@ -107,7 +107,7 @@ io.on('connection', (socket) => {
 
     let chatInstance = {};
     socket.on("pageSummarisation.send", async (data) => {
-        console.log("Received page summarisation chat data: ", data, ' ', data.isStart);
+        console.log("Received page summarisation chat data!");
         if (data.isStart) {
             console.log("starting chat!");
             chatInstance = await startChat("Summarise the contents of a HTML page! Sending you the response in 1/n manner. Here you go!");
@@ -116,7 +116,7 @@ io.on('connection', (socket) => {
         if (data.isEnd) {
             console.log("ending chat!");
             const result = await chatInstance.getFinalResponse("Return the response of summarisation in the result key!");
-            console.log("sending final response >> ", result);
+            console.log("sending final response!");
             socket.emit("pageSummarisation.response", { sendingData: 0, result });
             chatInstance = {};
         } else {
