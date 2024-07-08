@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "pm2-runtime start server.js",
     "devStart": "nodemon ."
   },
   "keywords": [],
@@ -16,6 +16,7 @@
     "axios": "^1.7.2",
     "cors": "^2.8.5",
     "express": "^4.19.2",
+    "pm2": "^5.4.2",
     "socket.io": "^4.7.5"
   },
   "devDependencies": {
