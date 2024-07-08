@@ -18,6 +18,10 @@ const corsOptions = {
 
 app.use(cors(corsOptions)); // Apply CORS middleware with options  
 
+app.get("/ping", (req, res) => {
+    res.json("Pong!");
+});
+
 app.get('/', (req, res) => {
     res.json("Server's running!");
 });
