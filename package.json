@@ -2,9 +2,9 @@
   "name": "genaiapi",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "src/server.js",
   "scripts": {
-    "start": "pm2-runtime start server.js",
+    "start": "pm2-runtime start src/server.js",
     "devStart": "nodemon ."
   },
   "keywords": [],
