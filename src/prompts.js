@@ -19,8 +19,8 @@ const DOM_Functionality_Config = {
 const generatePromptForPerformingDOMOps = (currentPrompt) => {
   const stringifiedJSObj = JSON.stringify(DOM_Functionality_Config);
   const promptText = `
-          Your task is to decipher from the text the intention of the user - if it is a DOM/HTML operation or a general find operation (it can be anything, like 'clicking on a button', 'scrolling the page', 'clicking a button based on color', "find any text's occurrence in the website" etc.), try to match it with the most likely function provided below
-          and return the response in chained manner, i.e first return element finders, and its operation type. Here's it: "${currentPrompt}".
+          Your task is to decipher from the text the intention of the user - if it is a DOM/HTML operation or any general operation (it can be anything, like 'clicking on a button', 'scrolling the page', 'clicking a button based on color', "find any text's occurrence in the website", or "answering queries about something related to the page" etc.),
+          try to match it with the most likely function provided below and return the response in chained manner, i.e first return element finders, and its operation type. Here's it: "${currentPrompt}".
           If any appropriate match exists, return the appropriate output object from this JS object: ${stringifiedJSObj} containing the function name & operator, Example,  { result: [{ fn: findElementBasedOnText, input: 'Button text', operation: ''/*operation name*/, elementType: ''/*element type*/ }], additionalInfo: "Anything you'd like to let me know!" }
           Return operation as 'scrollIntoView' in case it doesn't match any other operation. Fill these object keys as applicable and keep them empty if not applicable. If not, return an empty array.
           Note: your response should only be a JSON response. Not plain text whatsover, example response: { result: [], additionalInfo: "Anything you'd like to let me know!" } Also, if the user is trying to perform any activity that didn't match any function, return the empty response!`;
