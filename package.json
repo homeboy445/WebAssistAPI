@@ -5,7 +5,7 @@
   "main": "src/server.js",
   "scripts": {
     "start": "pm2-runtime start src/server.js",
-    "devStart": "nodemon ."
+    "dev": "nodemon ."
   },
   "keywords": [],
   "author": "",

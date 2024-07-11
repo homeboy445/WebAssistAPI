@@ -115,8 +115,28 @@ const io = socketIo(server, {
   },
 });
 
+const getChannelInfo = (type) => {
+  let mainTask;
+  switch (type) {
+    case "summarise": {
+      mainTask = "pageSummarisation";
+      break;
+    }
+    case "query": {
+      mainTask = "pageQuery";
+      break;
+    }
+  }
+  return {
+    startConnection: `${mainTask}.send`,
+    endConnection: `${mainTask}.response`
+  };
+};
+
+const pageSummarisationChannel = getChannelInfo("summarise");
+const pageQueryChannel = getChannelInfo("query");
+
 io.on("connection", (socket) => {
-  try {
     console.log("A user connected");
 
     socket.on("disconnect", () => {
@@ -124,7 +144,7 @@ io.on("connection", (socket) => {
     });
 
     let chatInstance = {};
-    socket.on("pageSummarisation.send", async (data) => {
+    socket.on(pageSummarisationChannel.startConnection, async (data) => {
       console.log("Received page summarisation chat data!");
       if (data.isStart) {
         console.log("starting chat!");
@@ -139,13 +159,33 @@ io.on("connection", (socket) => {
           "Return the response of summarisation in the result key!"
         );
         console.log("sending final response!");
-        socket.emit("pageSummarisation.response", { sendingData: 0, result });
+        socket.emit(pageSummarisationChannel.endConnection, { sendingData: 0, result });
         chatInstance = {};
       } else {
-        socket.emit("pageSummarisation.response", { sendingData: 1 });
+        socket.emit(pageSummarisationChannel.endConnection,  { sendingData: 1 });
       }
     });
-  } catch (e) {
-    console.log("an error occurred in socket connection! ", e);
-  }
+
+    socket.on(pageQueryChannel.startConnection, async (data) => {
+      console.log("Received page query chat data!");
+      if (data.isStart) {
+        console.log("starting chat!");
+        chatInstance = await startChat(
+          "Study the contents of this HTML page and answer queries based on it! Sending you the response in 1/n manner. Here you go!"
+        );
+      }
+      await chatInstance.sendMessage(data.pageString);
+      if (data.isEnd) {
+        console.log("ending chat!");
+        const mainQuery = data.query || "Give basic info about the page!";
+        const result = await chatInstance.getFinalResponse(
+          `Return the response of this query '${mainQuery}' about this page in the result key! Also, make sure to not entertain this query if this doesn't ask anything related to this website!`
+        );
+        console.log("sending final response!");
+        socket.emit(pageQueryChannel.endConnection, { sendingData: 0, result });
+        chatInstance = {};
+      } else {
+        socket.emit(pageQueryChannel.endConnection, { sendingData: 1 });
+      }
+    });
 });
