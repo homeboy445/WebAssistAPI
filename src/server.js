@@ -99,7 +99,7 @@ app.post("/findElement", async (req, res) => {
     textArray,
     userPrompt
   );
-  console.log("final prompt: ", resultantPrompt);
+  // console.log("final prompt: ", resultantPrompt);
   try {
     const result = await getResponseFromGemini(resultantPrompt);
     res.json(result);
