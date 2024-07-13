@@ -4,6 +4,7 @@ const {
   getResponseFromGemini,
   processPromptListAsyncly,
   startChat,
+  speechToTextTranscriber,
 } = require("./ai");
 const {
   generatePromptForPerformingDOMOps,
@@ -12,11 +13,16 @@ const {
 } = require("./prompts");
 const cors = require("cors");
 const socketIo = require("socket.io");
+const bodyParser = require("body-parser");
 
 const app = express();
 const port = process.env.PORT || 3000; // Port to listen on!
 
 app.use(express.json());
+
+// Middleware to parse raw binary data
+app.use(bodyParser.raw({ type: 'application/octet-stream', limit: '10mb' }));
+
 
 // Configure CORS options (adjust origins as needed)
 const corsOptions = {
@@ -56,7 +62,7 @@ app.post("/getOperationName", async (req, res) => {
     return res.status(400).json("Empty response!");
   }
   const resultantPrompt = generatePromptForPerformingDOMOps(userPrompt);
-  console.log("## ", resultantPrompt);
+  // console.log("## ", resultantPrompt);
   try {
     const result = await getResponseFromGemini(resultantPrompt);
     res.json(result);
@@ -93,7 +99,7 @@ app.post("/findElement", async (req, res) => {
     textArray,
     userPrompt
   );
-  console.log("final prompt: ", resultantPrompt);
+  // console.log("final prompt: ", resultantPrompt);
   try {
     const result = await getResponseFromGemini(resultantPrompt);
     res.json(result);
@@ -103,9 +109,24 @@ app.post("/findElement", async (req, res) => {
   }
 });
 
+app.post('/transcribe', async (req, res) => {
+  const audioBuffer = req.body;
+  if (!audioBuffer) {
+    return res.status(400).json("Empty response!");
+  }
+  try {
+    const transcribedData = await speechToTextTranscriber(audioBuffer);
+    res.json({ transcribedData });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json("Failed!");
+  }
+});
+
 const server = app.listen(port, () =>
   console.log(`Server listening on port ${port}`)
 );
+
 const io = socketIo(server, {
   cors: {
     origin: "*", // Allowed origins
