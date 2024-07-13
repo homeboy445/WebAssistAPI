@@ -49,15 +49,11 @@ const startChat = async (initialPrompt) => {
   return handler;
 }
 
-const speechToTextTranscriber = async (blobData) => {
+const speechToTextTranscriber = async (audioArrayBuffer) => {
     const client = new AssemblyAI({
       apiKey: process.env.ASSEMBLY_AI_API,
     });
-    const data = {
-      audio_url: FILE_URL,
-    };
-    const transcript = await client.transcripts.transcribe(data);
-    console.log("## ", transcript);
+    const transcript = await client.transcripts.transcribe({ audio: audioArrayBuffer });
     return transcript.text;
 }
 
