@@ -177,7 +177,7 @@ io.on("connection", (socket) => {
       if (data.isEnd) {
         console.log("ending chat!");
         const result = await chatInstance.getFinalResponse(
-          "Return the response of summarisation in the result key!"
+          "Return the response of summarisation of the above text in the result key!"
         );
         console.log("sending final response!");
         socket.emit(pageSummarisationChannel.endConnection, { sendingData: 0, result });
