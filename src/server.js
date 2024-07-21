@@ -40,22 +40,6 @@ app.get("/ping", (req, res) => {
   res.json("Pong!");
 });
 
-app.post("/getResponse", async (req, res) => {
-  const { prompt } = req.body;
-  console.log("Received a prompt: ", prompt);
-  if (!prompt) {
-    res.status(400).json("Empty response!");
-  } else {
-    try {
-      const result = await getResponseFromGemini(prompt);
-      res.json(result);
-    } catch (e) {
-      console.log(e);
-      res.status(404).json("Failed!");
-    }
-  }
-});
-
 app.post("/getOperationName", async (req, res) => {
   const { userPrompt } = req.body;
   if (!userPrompt) {
